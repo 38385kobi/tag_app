@@ -21,10 +21,12 @@ class PostsController < ApplicationController
   def edit
     post_attributes = @post.attributes
     @post_form = PostForm.new(post_attributes)
+    @post_form.tag_name = @post.tags&.first&.tag_name
   end
 
   def update
     @post_form = PostForm.new(post_form_params)
+    @post_form.image ||= @post.image.blob
 
     if @post_form.valid?
       @post_form.update(post_form_params, @post)
@@ -36,7 +38,7 @@ class PostsController < ApplicationController
 
   private
   def post_form_params
-    params.require(:post_form).permit(:text, :image)
+    params.require(:post_form).permit(:text, :tag_name, :image)
   end
 
   def set_post
